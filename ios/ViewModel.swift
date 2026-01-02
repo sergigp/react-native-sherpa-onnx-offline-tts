@@ -33,13 +33,27 @@ func createOfflineTts(modelId: String) -> SherpaOnnxOfflineTtsWrapper? {
     }
     
     print("Kislaytts Very good parsed till here");
+
+    // Resolve paths from app bundle
+    guard let bundlePath = Bundle.main.resourcePath else {
+        print("Kislaytts Failed to get bundle resource path")
+        return nil
+    }
+
+    let absoluteModelPath = (bundlePath as NSString).appendingPathComponent(paths.modelPath)
+    let absoluteTokensPath = (bundlePath as NSString).appendingPathComponent(paths.tokensPath)
+    let absoluteDataDirPath = (bundlePath as NSString).appendingPathComponent(paths.dataDirPath)
+
+    print("Kislaytts Model path: \(absoluteModelPath)")
+    print("Kislaytts Tokens path: \(absoluteTokensPath)")
+    print("Kislaytts Data dir path: \(absoluteDataDirPath)")
     
     // Configure the VITS model
     let vitsConfig = sherpaOnnxOfflineTtsVitsModelConfig(
-        model: paths.modelPath,
-        lexicon: "", // Assuming lexicon is not needed; set accordingly if required
-        tokens: paths.tokensPath,
-        dataDir: paths.dataDirPath
+        model: absoluteModelPath,
+        lexicon: "",
+        tokens: absoluteTokensPath,
+        dataDir: absoluteDataDirPath
     )
     
     // Configure the overall model configuration
